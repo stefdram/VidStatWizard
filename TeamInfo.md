@@ -1,10 +1,10 @@
-# Team115-Oracles
+# Team102-Oracles
 
 ## Basic Information
 
 |   Info      |        Description     |
 | ----------- | ---------------------- |
-| TeamID      |        Team-115        |
+| TeamID      |        Team-102        |
 | TeamName    |         Oracles        |
 | Captain     |       Lisa Leung       |
 | Captain     |  ljleung2@illinois.edu |

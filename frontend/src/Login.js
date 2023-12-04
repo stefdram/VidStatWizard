@@ -23,8 +23,8 @@ const Login = (props) => {
        <header style={{ fontSize: "35px", fontWeight: "bold" , marginBottom: "10px"}}>
         Login
       </header>
-      <p>If we can find you as a user, enter your info to login and accesss your saved information.
-        If no matching login is found, we'll give you the option to create a user based on your inputs. 
+      <p>Enter your username and password to login and accesss your saved information.
+        If no matching login is found, we'll give you the option to sign up & create a user based on your inputs, or to try again, in case you mistyped or were just being silly.
       </p>
         <br />
         <div className={"inputContainer"}>

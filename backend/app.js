@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const router = require("./route");
-const db = require("./model");
 
 const port = 3000;
 const host = 'localhost';

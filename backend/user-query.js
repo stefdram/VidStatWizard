@@ -1,28 +1,7 @@
-// const db = require("./model");
-// const db = require('./app');
-
-const mysql = require("mysql");
-
-// MySQL database connection
-const db = mysql.createConnection({
-  host: "34.136.88.181",
-  user: "root",
-  password: "123",
-  database: "cs411",
-});
-
-db.connect((err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("Connected to database");
-  }
-});
-
-module.exports = db;
+const db = require("./model");
 
 // Read GET
-getAllUsers = (req, res) => {
+getAllUsers = async (req, res) => {
   const query = "SELECT * FROM User";
   db.query(query, (err, result) => {
     // return res.status(200).send(result);
@@ -35,69 +14,98 @@ getAllUsers = (req, res) => {
 };
 
 // Create POST
-createUser = async (req, res) => {
+createUser = (req, res) => {
   const { UserId, Email, Password, Name } = req.body;
   const checkUser = "SELECT * FROM User WHERE UserId = ? OR Email = ?";
 
-  try {
-    const checkResult = await db.promise().query(checkUser, [UserId, Email]);
+  db.query(checkUser, [UserId, Email], (err, checkResult) => {
+    if (err) {
+      console.error("Error: ", err);
+      return res.status(500).send("Error checking user");
+    }
 
-    if (checkResult[0].length > 0) {
+    // Check if any user exists with the same UserId or Email
+    if (checkResult.length > 0) {
       return res.status(409).send("UserId or Email already exists");
     }
 
+    // No existing user found, proceed with creating new user
     const insertQuery = "INSERT INTO User VALUES (?, ?, ?, ?)";
-    await db.promise().query(insertQuery, [UserId, Email, Password, Name]);
-    return res.status(200).send("User created successfully");
-  } catch (err) {
-    console.error("Error: ", err);
-    return res.status(500).send("Error creating user");
-  }
+    db.query(
+      insertQuery,
+      [UserId, Email, Password, Name],
+      (insertErr, insertResult) => {
+        if (insertErr) {
+          console.error("Error: ", insertErr);
+          return res.status(500).send("Error creating user");
+        }
+        return res.status(200).send("User created successfully");
+      }
+    );
+  });
 };
 
 // Delete DELETE
-deleteUser = async (req, res) => {
-  const { UserId } = req.params.UserId;
+deleteUser = (req, res) => {
+  const UserId  = req.params.userid;
   const checkUser = "SELECT * FROM User WHERE UserId = ?";
-  try {
-    const checkResult = await db.promise().query(checkUser, [UserId]);
-
-    if (checkResult[0].length == 0) {
-      return res.status(400).send(`User '${UserId}' unavailable!`);
+  const deleteQuery = "DELETE FROM User WHERE UserId = ?";
+  db.query(checkUser, [UserId], (err, result) => {
+    if (err) {
+      console.error("Error: ", err);
+      return res.status(500).send("Error checking user");
+    }
+    // Check if any user exists with the same UserId
+    if (result.length == 0) {
+      return res.status(409).send("UserId doesn't exists");
     }
 
-    const deleteQuery = "DELETE FROM User WHERE UserId = ?";
-    await db.promise().query(deleteQuery, [UserId]);
-    return res.status(200).send(`User '${UserId}' deleted successfully!`);
-  } catch (err) {
-    console.error("Error: ", err);
-    return res.status(500).send("Error deleting user");
-  }
+    db.query(deleteQuery, [UserId], (err, result) => {
+      if (err) {
+        console.error("Error: ", err);
+        return res.status(500).send("Error deleting User");
+      }
+      return res.status(200).send(`User '${UserId}' deleted successfully!`);
+    });
+  });
 };
 
 // Update PUT
-updateUser = async (req, res) => {
+updateUser = (req, res) => {
   const { UserId, Email, Name, Password } = req.body;
   const checkUser = "SELECT * FROM User WHERE UserId = ?";
   const checkEmail = "SELECT * FROM User WHERE Email = ?";
-  try {
-    const checkResultUser = await db.promise().query(checkUser, [UserId]);
-    if (checkResultUser[0].length == 0) {
-      return res.status(400).send(`User '${UserId}' unavailable!`);
-    }
-    const checkEmailUser = await db.promise().query(checkEmail, [Email]);
-    if (checkEmailUser[0].length != 0) {
-      return res.status(400).send(`Email '${Email} has been taken`);
-    }
+  const updateQuery =
+    "UPDATE User SET Email = ?, Name = ?, Password = ? WHERE UserId = ?";
 
-    const updateQuery =
-      "UPDATE User SET Email = ?, Name = ?, Password = ? WHERE UserId = ?";
-    await db.promise().query(updateQuery, [Email, Name, Password, UserId]);
-    return res.status(200).send(`User '${UserId}' updated successfully!`);
-  } catch (err) {
-    console.error("Error: ", err);
-    res.status(500).send("Error editing user");
-  }
+  db.query(checkUser, [UserId], (err, result) => {
+    if (err) {
+      console.error("Error: ", err);
+      return res.status(500).send("Error checking user");
+    }
+    // Check if any user exists with the same UserId
+    if (result.length == 0) {
+      return res.status(409).send("UserId doesn't exists");
+    }
+    db.query(checkEmail, [Email], (err, result) => {
+      if (err) {
+        console.error("Error: ", err);
+        return res.status(500).send("Error checking email");
+      }
+      // Check if any user exists with the same Email
+      if (result.length > 0) {
+        return res.status(409).send("Email already exists");
+      }
+
+      db.query(updateQuery, [Email, Name, Password, UserId], (err, result) => {
+        if (err) {
+          console.error("Error: ", err);
+          return res.status(500).send("Error updating User");
+        }
+        return res.status(200).send(`User '${UserId}' updated successfully!`);
+      });
+    });
+  });
 };
 
 module.exports = { getAllUsers, createUser, deleteUser, updateUser };

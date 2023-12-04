@@ -1,7 +1,7 @@
 import React from "react"
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
-import logoImage from "./vswizlogo.png";
+import logoImage from "./vswizlogo2.png";
 
 const Home = (props) => {
     const { loggedIn, email } = props

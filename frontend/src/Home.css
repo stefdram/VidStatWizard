@@ -1,0 +1,37 @@
+.logo {
+    width: 25%;
+    height: auto;
+}
+
+.smallerLogo {
+    width: 9.5%;
+    height: auto;
+}
+.mainContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .buttonContainer {
+    font-size: 20px;
+    padding-top: 10 px;
+  }
+
+  .inputButton {
+    font-size: 18px;
+    padding: 10px 20px;
+  }
+
+  .inputBox {
+    font-size: 16px;
+  }
+
+  .emptyDiv {
+    padding: 10px; /* Adjust the value as needed */
+  }
+
+  p {
+    font-size: 18px;
+  }

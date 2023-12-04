@@ -35,3 +35,31 @@
   p {
     font-size: 18px;
   }
+
+  .signupLink p {
+    font-size: 0.8em; /* Makes the text smaller */
+    margin-top: 10px; /* Adjust as needed for spacing */
+}
+
+.signupText {
+    color: blue; /* Sets the text color to blue */
+    text-decoration: underline; /* Adds underline to the text */
+    cursor: pointer; /* Changes cursor to a pointer on hover */
+}
+
+.signupText:hover {
+    text-decoration: none; /* Optional: Removes underline on hover for effect */
+}
+
+.inputContainerSignUp {
+  /* Your existing styles... */
+
+  margin-bottom: 15px; /* Adds space below each input container */
+  /* You can adjust the value of margin-bottom as per your design needs */
+}
+
+.errorLabel {
+  color: red; /* Error message color */
+  font-size: 0.8em; /* Smaller font size for error message */
+  margin-top: 5px; /* Spacing between the link and the error message */
+}

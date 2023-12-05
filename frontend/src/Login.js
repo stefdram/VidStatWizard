@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import logoImage from "./wizhat.png";
+import axios from "axios";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
@@ -11,7 +12,29 @@ const Login = (props) => {
 
   const navigate = useNavigate();
 
-  const onButtonClick = () => {};
+  const onButtonClick = () => {
+    axios
+      .post("http://localhost:3000/login", { UserId: email, Password: password })
+      .then((response) => {
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+        setEmail("");
+        setPassword("");
+        setEmailError("");
+        setPasswordError("");
+        navigate("/search");
+      })
+      .catch((error) => {
+        console.error("Login error: ", error);
+        if (error.response && error.response.status === 409) {
+          setPasswordError("Invalid UserId!");
+        } else if (error.response && error.response.status === 401) {
+          setPasswordError("Invalid Password!");
+        } else {
+          setPasswordError("An error occurred. Please try again.");
+        }
+      });
+  };
 
   const onGoHome = () => {
     navigate("/");
@@ -41,7 +64,7 @@ const Login = (props) => {
       <div className={"inputContainer"}>
         <input
           value={email}
-          placeholder="enter username here..."
+          placeholder="Enter username"
           onChange={(ev) => setEmail(ev.target.value)}
           className={"inputBox"}
         />
@@ -51,12 +74,12 @@ const Login = (props) => {
       <div className={"inputContainer"}>
         <input
           value={password}
-          placeholder="enter password here..."
+          placeholder="Enter password"
           onChange={(ev) => setPassword(ev.target.value)}
           className={"inputBox"}
         />
-        <label className="errorLabel">{passwordError}</label>
       </div>
+      <label className="errorLabel">{passwordError}</label>
       <br />
       <div className={"inputContainer"}>
         <input

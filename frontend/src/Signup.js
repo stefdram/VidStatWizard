@@ -73,7 +73,7 @@ const Signup = () => {
       <div className={"inputContainerSignUp"}>
         <input
           value={userId}
-          placeholder="Enter User ID..."
+          placeholder="Enter username..."
           onChange={(ev) => setUserId(ev.target.value)}
           className={"inputBox"}
         />
@@ -81,7 +81,7 @@ const Signup = () => {
       <div className={"inputContainerSignUp"}>
         <input
           value={email}
-          placeholder="Enter Email..."
+          placeholder="Enter email..."
           onChange={handleEmailChange}
           className={"inputBox"}
         />
@@ -89,7 +89,7 @@ const Signup = () => {
       <div className={"inputContainerSignUp"}>
         <input
           value={name}
-          placeholder="Enter Name..."
+          placeholder="Enter name..."
           onChange={(ev) => setName(ev.target.value)}
           className={"inputBox"}
         />
@@ -97,7 +97,7 @@ const Signup = () => {
       <div className={"inputContainerSignUp"}>
         <input
           value={password}
-          placeholder="Enter Password..."
+          placeholder="Enter password..."
           onChange={(ev) => setPassword(ev.target.value)}
           className={"inputBox"}
         />

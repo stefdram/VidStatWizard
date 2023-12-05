@@ -1,4 +1,5 @@
 const db = require("./model");
+const jwt = require("jsonwebtoken");
 
 // Read GET
 getAllUsers = async (req, res) => {
@@ -15,7 +16,10 @@ getAllUsers = async (req, res) => {
 
 // Create POST
 createUser = (req, res) => {
-  const { UserId, Email, Password, Name } = req.body;
+  var { UserId, Email, Password, Name } = req.body;
+  UserId = UserId.toLowerCase();
+  Email = Email.toLowerCase();
+
   const checkUser = "SELECT * FROM User WHERE UserId = ? OR Email = ?";
 
   db.query(checkUser, [UserId, Email], (err, checkResult) => {
@@ -47,7 +51,7 @@ createUser = (req, res) => {
 
 // Delete DELETE
 deleteUser = (req, res) => {
-  const UserId  = req.params.userid;
+  const UserId = req.params.userid;
   const checkUser = "SELECT * FROM User WHERE UserId = ?";
   const deleteQuery = "DELETE FROM User WHERE UserId = ?";
   db.query(checkUser, [UserId], (err, result) => {
@@ -71,8 +75,10 @@ deleteUser = (req, res) => {
 };
 
 // Update PUT
-updateUser = (req, res) => {
-  const { UserId, Email, Name, Password } = req.body;
+const updateUser = (req, res) => {
+  var { UserId, Email, Name, Password } = req.body;
+  UserId = UserId.toLowerCase();
+  Email = Email.toLowerCase();
   const checkUser = "SELECT * FROM User WHERE UserId = ?";
   const checkEmail = "SELECT * FROM User WHERE Email = ?";
   const updateQuery =
@@ -108,4 +114,43 @@ updateUser = (req, res) => {
   });
 };
 
-module.exports = { getAllUsers, createUser, deleteUser, updateUser };
+// Login Authentication
+loginUser = (req, res) => {
+  const { UserId, Password } = req.body;
+  const query = "SELECT * FROM User WHERE UserId = ?";
+  db.query(query, [UserId], (err, result) => {
+    if (err) {
+      console.error("Error: ", err);
+      return res.status(500).send("Error logging in");
+    }
+
+    if (result.length === 0) {
+      return res.status(409).send("Invalid UserId");
+    }
+
+    const user = result[0];
+    if (Password != user.Password) {
+      return res.status(401).send("Invalid Password!");
+    }
+
+    const token = jwt.sign({ userId: user.UserId }, "Secret", {
+      expiresIn: "1h",
+    });
+    return res.status(200).json({ token });
+  });
+};
+
+// Test Authentication
+testProtected = (req, res) => {
+  console.log("Success!");
+  return res.status(200).send("Success!");
+};
+
+module.exports = {
+  getAllUsers,
+  createUser,
+  deleteUser,
+  updateUser,
+  loginUser,
+  testProtected,
+};

@@ -136,7 +136,9 @@ loginUser = (req, res) => {
     const token = jwt.sign({ userId: user.UserId }, "Secret", {
       expiresIn: "1h",
     });
-    return res.status(200).json({ token });
+    return res
+      .status(200)
+      .json({ userId: user.UserId, name: user.Name, email: user.Email, token });
   });
 };
 

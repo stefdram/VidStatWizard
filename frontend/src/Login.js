@@ -17,7 +17,13 @@ const Login = (props) => {
       .post("http://localhost:3000/login", { UserId: email, Password: password })
       .then((response) => {
         const token = response.data.token;
+        const userId = response.data.userId;
+        const name = response.data.name;
+        const email = response.data.email;
         localStorage.setItem("token", token);
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("name", name);
+        localStorage.setItem("email", email);
         setEmail("");
         setPassword("");
         setEmailError("");

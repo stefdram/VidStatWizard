@@ -15,11 +15,11 @@ CREATE TRIGGER Email_Validation
 
         IF @Duplicate_flag = 1
             THEN
-            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already exists!'
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already exists!';
 
-        ELSE IF @Duplicate_flag = 0 
+        ELSEIF @Duplicate_flag = 0 
             THEN    
-            SET new.Email = new.Email 
+            SET new.Email = new.Email ;
         END IF;
 
     END;

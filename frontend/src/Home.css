@@ -127,3 +127,9 @@
 .dropdown:hover .dropdown-content {display: block;}
 
 .dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+.editErrorMessage {
+  color: red; /* Red text for errors */
+  margin: 10px 0; /* Add some spacing */
+  text-align: center; /* Center the text */
+}

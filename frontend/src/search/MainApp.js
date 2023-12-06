@@ -134,6 +134,11 @@ const MainApp = () => {
       ...prevStates,
       [videoId]: { open: true, anchorEl: event.currentTarget },
     }));
+
+    // axios
+    // .get()
+    // .then()
+    // .catch();
   };
 
   const handlePopoverClose = (videoId) => {
@@ -256,8 +261,8 @@ const MainApp = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Main content of your app goes here */}
-      <section>{/* Your app content */}
+      {}
+      <section>{}
       {
         searchQ && (
           <div>

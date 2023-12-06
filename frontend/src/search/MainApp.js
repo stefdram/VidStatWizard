@@ -11,7 +11,11 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  InputAdornment,
+  IconButton
 } from "@mui/material";
+
+import SearchIcon from "@mui/icons-material/Search";
 
 const MainApp = () => {
   const [profileOpen, setProfileOpen] = useState(false);
@@ -23,6 +27,9 @@ const MainApp = () => {
     name: localStorage.getItem("name") || "",
     password: "",
   });
+  const [searchQ, setSearchQ] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchError, setSearchError] = useState("");
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -97,6 +104,28 @@ const MainApp = () => {
       });
   };
 
+  const handleSearchInputChange = (event) => {
+    setSearchQ(event.target.value);
+  };
+
+  const handleVideoSearch = () => {
+    axios
+    .get(`http://localhost:3000/users/video_titles?search_key=${encodeURIComponent(searchQ)}`)
+    .then((response) => {
+      if(response.data.length === 0) {
+        setSearchResults([]);
+        setSearchError("No videos match!")
+      }
+      setSearchResults(response.data);
+      setSearchError("");
+    })
+    .catch((error) => {
+      console.error("Error searching videos: ", error);
+      setSearchResults([]);
+      setSearchError("An error occurred. Please try again.");
+    });
+  };
+
   return (
     <>
       <div className="logoContainer">
@@ -115,6 +144,22 @@ const MainApp = () => {
             <a onClick={handleDeleteClick}>Delete Profile</a>
             <a onClick={handleLogout}>Logout</a>
           </div>
+        </div>
+        <div className="searchContainer">
+          <TextField
+            placeholder="Search videos..."
+            value={searchQ}
+            onChange={handleSearchInputChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleVideoSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            />
         </div>
       </header>
 
@@ -195,7 +240,34 @@ const MainApp = () => {
       </Dialog>
 
       {/* Main content of your app goes here */}
-      <section>{/* Your app content */}</section>
+      <section>{/* Your app content */}
+      {
+        searchQ && (
+          <div>
+          <h2>Search Results for "{searchQ}"</h2>
+          <div className="searchResultsContainer">
+            {searchResults.map((video, index) => (
+              <div key={video.VideoId} className="videoItem">
+                <img
+                  src={video.ThumbnailLink}
+                  alt={video.Title}
+                  style={{ width: '200px', height: '150px' }}
+                />
+                <h3>
+                  <a href={video.Link} target="_blank" rel="noopener noreferrer">
+                    {video.Title}
+                  </a>
+                </h3>
+                <h4>
+                  {video.desah}
+                </h4>
+              </div>
+            ))}
+          </div>
+          {searchError && <p className="searchErrorMessage">{searchError}</p>}
+        </div>
+        )}
+     </section>
     </>
   );
 };

@@ -133,3 +133,13 @@
   margin: 10px 0; /* Add some spacing */
   text-align: center; /* Center the text */
 }
+
+.searchResultsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px; /* Adjust the spacing between items */
+}
+
+.videoItem {
+  box-sizing: border-box;
+}

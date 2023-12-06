@@ -12,7 +12,8 @@ import {
   DialogActions,
   Button,
   InputAdornment,
-  IconButton
+  IconButton, 
+  Popover
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -124,6 +125,22 @@ const MainApp = () => {
       setSearchResults([]);
       setSearchError("An error occurred. Please try again.");
     });
+  };
+
+  const [popoverStates, setPopoverStates] = useState({});
+
+  const handlePopoverOpen = (event, videoId) => {
+    setPopoverStates((prevStates) => ({
+      ...prevStates,
+      [videoId]: { open: true, anchorEl: event.currentTarget },
+    }));
+  };
+
+  const handlePopoverClose = (videoId) => {
+    setPopoverStates((prevStates) => ({
+      ...prevStates,
+      [videoId]: { open: false, anchorEl: null },
+    }));
   };
 
   return (
@@ -252,7 +269,28 @@ const MainApp = () => {
                   src={video.ThumbnailLink}
                   alt={video.Title}
                   style={{ width: '200px', height: '150px' }}
-                />
+                  onClick={(event) => handlePopoverOpen(event, video.VideoId)}
+                  />
+                  <Popover
+                    className="videoInfo"
+                    open={popoverStates[video.VideoId]?.open || false}
+                    anchorEl={popoverStates[video.VideoId]?.anchorEl}
+                    onClose={() => handlePopoverClose(video.VideoId)}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                  >
+                    <div>
+                      <p> Channel Popularity: </p>
+                      <p> Video Category: </p>
+                      <p> VideoId: {video.VideoId} </p>
+                    </div>
+                  </Popover>
                 <h3>
                   <a href={video.Link} target="_blank" rel="noopener noreferrer">
                     {video.Title}

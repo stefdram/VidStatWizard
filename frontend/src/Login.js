@@ -62,11 +62,7 @@ const Login = (props) => {
         Enter your username and password to login and accesss your saved
         information.{" "}
       </p>
-      <p style={{ marginBottom: "23px" }}>
-        If no matching login is found, we'll give you the option to sign up &
-        create a user based on your inputs, or to try again, in case you
-        mistyped or were just being silly.
-      </p>
+
       <div className={"inputContainer"}>
         <input
           value={email}

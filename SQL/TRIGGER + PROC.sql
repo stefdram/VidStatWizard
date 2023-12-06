@@ -56,7 +56,7 @@ CREATE PROCEDURE Channel_Popularity_Calculator(IN YoutubeCategory VARCHAR(30))
 
             IF Video_Popularity > 0 AND Video_Popularity < 1000000 THEN   
                 SET Current_Popularity_Level = 1; 
-            ELSE IF Video_Popularity >= 1000000 AND Video_Popularity < 3000000 THEN
+            ELSEIF Video_Popularity >= 1000000 AND Video_Popularity < 3000000 THEN
                 SET Current_Popularity_Level = 2; 
             ELSE    
                 SET Current_Popularity_level = 3; 

@@ -66,7 +66,11 @@ CREATE PROCEDURE Channel_Popularity_Calculator(IN YoutubeCategory VARCHAR(30))
             UNTIL exit_loop
         END REPEAT;
 
-            SELECT Channel_Title, Score, Popularity_Level FROM Channel_Popularity_Calc
-            ORDER BY ChannelId; 
+        SELECT cp.Channel_Title, COUNT(v.VideoId) as NumberOfTrendingVideos, SUM(vs.ViewCount) as TotalViewCount, cp.Score, cp.Popularity_Level
+        FROM Channel_Popularity_Calc cp JOIN Channel c ON (cp.ChannelId = c.ChannelId) JOIN Video v USING (VideoId) NATURAL JOIN VideoStats vs
+        WHERE vs.Likes > 100000
+        GROUP BY c.ChannelId
+        ORDER BY cp.Title 
+        LIMIT 15;
+ 
     END;
-            

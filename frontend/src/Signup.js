@@ -42,9 +42,11 @@ const Signup = () => {
         navigate("/login");
       })
       .catch((error) => {
-        if (error.response && error.response.status === 409) {
+        if (error.response && error.response.status === 401) {
           // Handle existing UserId or Email
-          setError("UserId or Email already exists");
+          setError("UserId already exists");
+        } else if (error.response && error.response.status === 409) {
+          setError("Email already exists");
         } else {
           console.error("There was an error!", error);
           setError("An error occurred. Please try again.");

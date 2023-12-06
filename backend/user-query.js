@@ -20,9 +20,10 @@ createUser = (req, res) => {
   UserId = UserId.toLowerCase();
   Email = Email.toLowerCase();
 
-  const checkUser = "SELECT * FROM User WHERE UserId = ? OR Email = ?";
+  // const checkUser = "SELECT * FROM User WHERE UserId = ? OR Email = ?";
+  const checkUser = "SELECT * FROM User WHERE UserId = ?";
 
-  db.query(checkUser, [UserId, Email], (err, checkResult) => {
+  db.query(checkUser, [UserId], (err, checkResult) => {
     if (err) {
       console.error("Error: ", err);
       return res.status(500).send("Error checking user");
@@ -30,7 +31,7 @@ createUser = (req, res) => {
 
     // Check if any user exists with the same UserId or Email
     if (checkResult.length > 0) {
-      return res.status(409).send("UserId or Email already exists");
+      return res.status(401).send("UserId already exists");
     }
 
     // No existing user found, proceed with creating new user
@@ -40,8 +41,12 @@ createUser = (req, res) => {
       [UserId, Email, Password, Name],
       (insertErr, insertResult) => {
         if (insertErr) {
-          console.error("Error: ", insertErr);
-          return res.status(500).send("Error creating user");
+          if (insertErr.code === 'ER_SIGNAL_EXCEPTION') {
+            return res.status(409).send("Email already exists");
+          } else {
+            console.error("Error: ", insertErr);
+            return res.status(500).send("Error creating user");
+          }
         }
         return res.status(200).send("User created successfully");
       }

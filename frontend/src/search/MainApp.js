@@ -31,6 +31,8 @@ const MainApp = () => {
   const [searchQ, setSearchQ] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchError, setSearchError] = useState("");
+  const [popu, setPopu] = useState("");
+  const [nOfTrend, setNOftrend] = useState("");
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -129,19 +131,22 @@ const MainApp = () => {
 
   const [popoverStates, setPopoverStates] = useState({});
 
-  const handlePopoverOpen = (event, videoId) => {
+  const handlePopoverOpen = (event, videoId, Category, ChannelId) => {
+    axios.get('http://localhost:3000/popularity', {params: {category: Category, channel: ChannelId}}).then((response) => {
+      const popular = response.data[0].Popularity;
+      const trendingvid = response.data[0].NumberOfTrendingVideos;
+      setPopu(popular);
+      setNOftrend(trendingvid);
+    })
     setPopoverStates((prevStates) => ({
       ...prevStates,
       [videoId]: { open: true, anchorEl: event.currentTarget },
     }));
-
-    // axios
-    // .get()
-    // .then()
-    // .catch();
   };
 
   const handlePopoverClose = (videoId) => {
+    setPopu("");
+    setNOftrend("");
     setPopoverStates((prevStates) => ({
       ...prevStates,
       [videoId]: { open: false, anchorEl: null },
@@ -274,7 +279,7 @@ const MainApp = () => {
                   src={video.ThumbnailLink}
                   alt={video.Title}
                   style={{ width: '200px', height: '150px' }}
-                  onClick={(event) => handlePopoverOpen(event, video.VideoId)}
+                  onClick={(event) => handlePopoverOpen(event, video.VideoId, video.Category, video.ChannelId)}
                   />
                   <Popover
                     className="videoInfo"
@@ -291,9 +296,9 @@ const MainApp = () => {
                     }}
                   >
                     <div>
-                      <p> Channel Popularity: </p>
-                      <p> Video Category: </p>
-                      <p> VideoId: {video.VideoId} </p>
+                      <p> Channel Popularity: {popu}</p>
+                      <p> Number of Trending Videos: {nOfTrend} </p>
+                      <p> Video Category: {video.Category} </p>
                     </div>
                   </Popover>
                 <h3>

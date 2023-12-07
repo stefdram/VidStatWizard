@@ -11,5 +11,6 @@ router.delete('/delete/:userid', User.deleteUser);
 router.put('/update/user', User.updateUser);
 router.post('/login', User.loginUser);
 router.get('/test', authenticateToken, User.testProtected);
+router.get('/popularity', Video.fetch_popularity);
 
 module.exports = router;

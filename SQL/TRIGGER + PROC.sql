@@ -24,7 +24,7 @@ CREATE TRIGGER Email_Validation
 
     END;
 
-CREATE PROCEDURE Channel_Popularity_Calculator(IN YoutubeCategory VARCHAR(30))
+CREATE PROCEDURE Channel_Popularity_Calculator(IN YoutubeCategory VARCHAR(30), IN Channelol VARCHAR(30))
     BEGIN  
         DECLARE Video_ChannelId VARCHAR(30);
         DECLARE Video_Popularity DOUBLE;
@@ -34,10 +34,10 @@ CREATE PROCEDURE Channel_Popularity_Calculator(IN YoutubeCategory VARCHAR(30))
 
         DECLARE channelCurr CURSOR FOR (
             SELECT c.ChannelId, c.Title, SUM((vs.Likes - vs.Dislikes) + vs.ViewCount + vs.CommentCount) as popularity_metric
-            FROM Channel c JOIN Video v USING (ChannelId) JOIN VideoStats vs USING(VideoId) JOIN Categories ca USING (CategoryId)
+            FROM Channel c JOIN Video v ON (v.ChannelId = c.ChannelId) JOIN VideoStats vs ON (v.VideoId = vs.VideoId) JOIN Categories ca ON (v.CategoryId = ca.CategoryId)
             WHERE ca.Category = YoutubeCategory 
-            GROUP BY c.ChannelId; 
-        )
+            GROUP BY c.ChannelId
+        );
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET exit_loop = TRUE;
 
         DROP TABLE IF EXISTS Channel_Popularity_Calc;
@@ -66,11 +66,9 @@ CREATE PROCEDURE Channel_Popularity_Calculator(IN YoutubeCategory VARCHAR(30))
             UNTIL exit_loop
         END REPEAT;
 
-        SELECT cp.Channel_Title, COUNT(v.VideoId) as NumberOfTrendingVideos, SUM(vs.ViewCount) as TotalViewCount, cp.Score, cp.Popularity_Level
-        FROM Channel_Popularity_Calc cp JOIN Channel c ON (cp.ChannelId = c.ChannelId) JOIN Video v USING (VideoId) NATURAL JOIN VideoStats vs
-        WHERE vs.Likes > 100000
-        GROUP BY c.ChannelId
-        ORDER BY cp.Title 
-        LIMIT 15;
+        SELECT cp.Popularity_Level as Popularity, COUNT(v.VideoId) as NumberOfTrendingVideos
+        FROM Channel_Popularity_Calc cp JOIN Channel c ON (cp.ChannelId = c.ChannelId) JOIN Video v ON (v.ChannelId = c.ChannelId) JOIN Categories ca ON (v.CategoryId = ca.CategoryId)
+        WHERE c.ChannelId = Channelol AND ca.Category = YoutubeCategory
+        GROUP BY cp.Popularity_Level;
  
     END;

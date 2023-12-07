@@ -34,6 +34,7 @@ const MainApp = () => {
   const [popu, setPopu] = useState("");
   const [nOfTrend, setNOftrend] = useState("");
   const navigate = useNavigate();
+  const [videoLinks, setVideoLinks] = useState([]);
 
   const handleLogout = () => {
     // Remove all data from localStorage
@@ -53,6 +54,11 @@ const MainApp = () => {
     setProfile({ ...profile, password: "" });
     setEditOpen(!editOpen);
   };
+
+  const addVideo = (newLink) => {
+    setVideoLinks((prevLinks) => [...prevLinks, newLink]);
+  };
+  
 
   const handleDeleteClick = () => {
     setDeleteOpen(!deleteOpen);
@@ -170,6 +176,19 @@ const MainApp = () => {
             <a onClick={handleEditProfile}>Edit Profile</a>
             <a onClick={handleDeleteClick}>Delete Profile</a>
             <a onClick={handleLogout}>Logout</a>
+          </div>
+        </div>
+        <div className="dropdown">
+          <button className="dropbtn2">&#x25BC;</button>
+          <div className="dropdown-content">
+            <h3> Watch Later: </h3>
+            <ul>
+          {videoLinks.map((link, index) => (
+            <li key={index}>
+              <a href={link}>{link}</a>
+            </li>
+          ))}
+        </ul>
           </div>
         </div>
         <div className="searchContainer">
@@ -308,6 +327,10 @@ const MainApp = () => {
                 </h3>
                 <h4>
                   {video.desah}
+                  <p></p>
+                  <button onClick={() => addVideo(video.Link)}>
+                   +
+              </button>
                 </h4>
               </div>
             ))}

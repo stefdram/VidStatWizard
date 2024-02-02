@@ -1,1 +1,3 @@
-# Team102-Oracles
+# VidStatWizard
+
+VidStatWizard is a web application that allows users to navigate through the dataset to view what types of videos are trending on Youtube through various timeframes, such as for the past week, the past month, the past year, etc. In addition, users can view trending genres and tags for videos, such as music videos, sports videos, etc. Users can also add videos to a Watch Later list so they can keep exploring the tool and saving videos as needed. 
